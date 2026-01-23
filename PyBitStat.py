@@ -53,12 +53,12 @@ Notes:
     if not ei:
         return None
     arr = np.array(ei)
-    mn = arr.min()
-    mx = arr.max()
-    s = arr.sum()
-    avg = arr.mean()
-    res = {"sum": s, "min": mn, "max": mx, "avg": avg}
-    return res
+    return {
+        "sum": int(arr.sum()),
+        "min": int(arr.min()),
+        "max": int(arr.max()),
+        "avg": float(arr.mean())
+    } 
 
 
 def sign_counts(lst):
@@ -74,9 +74,9 @@ def sign_counts(lst):
     neg = (arr < 0).sum()
     zeros = (arr == 0).sum()
     return {
-        "plus": int(pos),
-        "minus": int(neg),
-        "zeros": int(zeros)
+        "pos": int(pos),
+        "neg": int(neg),
+        "zero": int(zeros)
     }
 
 def median_even(lst):

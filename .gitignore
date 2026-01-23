@@ -2,3 +2,7 @@ __pycache__/
 *.pyc
 .DS_Store
 venv/
+rep_empty.csv/
+rep_empty.txt/
+rep1.txt/
+rep2.csv/
