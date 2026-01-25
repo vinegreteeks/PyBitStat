@@ -1,5 +1,4 @@
 import os
-import numpy as np
 
 def even_only(lst):
     """
@@ -16,11 +15,7 @@ def even_only(lst):
     """
     res = []
     for x in lst:
-        if isinstance(x, bool):
-            continue
-        if not isinstance(x, (int, float)):
-            continue
-        if isinstance(x, float) and not x.is_integer():
+        if not _is_valid_number(x):
             continue
         xi = int(x)
         if xi % 2 == 0:
@@ -49,35 +44,55 @@ Notes:
     - Игнорируются bool и любые нечисловые типы.
     - "avg" всегда float (даже если делится нацело).
 """
-    ei = even_only(lst)
-    if not ei:
+    _sum = 0
+    _count = 0
+    _min = float('inf')
+    _max = float('-inf')
+    for x in lst:
+        if not _is_valid_number(x):
+            continue
+        val = int(x)
+        if val % 2 == 0:
+            continue
+        _sum += val
+        _count += 1
+        if val < _min:
+            _min = val
+        if val > _max:
+            _max = val
+    if _count == 0:
         return None
-    arr = np.array(ei)
     return {
-        "sum": int(arr.sum()),
-        "min": int(arr.min()),
-        "max": int(arr.max()),
-        "avg": float(arr.mean())
-    } 
-
+        "sum": _sum,
+        "min": _min,
+        "max": _max,
+        "avg": _sum / _count
+    }
 
 def sign_counts(lst):
     """
 Возвращает количество положительных, отрицательных и нулей.
     
     """
-    if not lst:
-        return {"plus": 0, "minus": 0, "zeros": 0}
-    lst = [x for x in lst if isinstance(x, (int, float)) and not isinstance(x , bool)]
-    arr = np.array(lst)
-    pos = (arr > 0).sum()
-    neg = (arr < 0).sum()
-    zeros = (arr == 0).sum()
-    return {
-        "pos": int(pos),
-        "neg": int(neg),
-        "zero": int(zeros)
-    }
+    summa = 0
+    pos = 0
+    neg = 0
+    zero = 0
+    for x in lst:
+        if not _is_valid_number(x):
+            continue
+        xi = int(x)
+        if xi > 0:
+            pos += 1
+        elif xi < 0:
+            neg += 1
+        else:
+            zero += 1
+    summa = pos + neg + zero
+    if summa == 0:
+        return None
+    else:
+        return {"pos": pos, "neg": neg, "zero": zero}
 
 def median_even(lst):
     """
@@ -345,6 +360,18 @@ def toggle_kth_bit(n, k):
     _check_non_negative_int("n", n)
     _check_non_negative_int("k", k)
     return n ^ (1 << k)
+
+def _is_valid_number(x):
+    """
+    проверяет, подходит ли число (int или float-целое, а не bool)
+    """
+    if isinstance(x, bool):
+        return False
+    if not isinstance(x,(int, float)):
+        return False
+    if isinstance(x, float) and not x.is_integer():
+        return False
+    return True
 
 def _check_non_negative_int(name, value):
     """
