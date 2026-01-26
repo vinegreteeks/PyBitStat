@@ -1,0 +1,33 @@
+name: Python Checks
+
+# когда запускать: на каждый пуш
+on: [push]
+
+jobs:
+  build:
+    # на какой машине запускать (виртуальный линукс)
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. скачиваем твой код на виртуалку
+    - uses: actions/checkout@v3
+
+    # 2. устанавливаем питон
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    # 3. ставим зависимости
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest black
+
+    # 4. проверяем стиль (если black найдет грязь — процесс упадет)
+    - name: Check style with Black
+      run: black --check .
+
+    # 5. запускаем тесты
+    - name: Test with pytest
+      run: pytest
