@@ -674,5 +674,47 @@ def normalize_path(path: str, fmt: str):
     return path, fmt
 
 
+
+class NumberAnalyzer:
+    def __init__(self, data):
+        """
+        Конструктор. Запускается один раз при создании.
+        Здесь мы сохраняем данные и валидируем их.
+        """
+        self.data = []
+        for x in data:
+            if self._is_valid_number(x):
+                self.data.append(int(x))
+
+    def _is_valid_number(self, x):
+        if isinstance(x, bool):
+            return False
+        if not isinstance(x, (int, float)):
+            return False
+        if isinstance(x, float) and not x.is_integer():
+            return False
+        return True
+    
+    def get_even_numbers(self):
+        evens = []
+        for x in self.data:
+            if x % 2 == 0:
+                evens.append(x)
+        return evens
+
+    def get_even_stats(self):
+        evens = self.get_even_numbers()
+        if not evens:
+            return None
+        sm = sum(evens)
+        mn = min(evens)
+        mx = max(evens)
+        num = len(evens)
+        return {"sum": sm, "min": mn, "max": mx, "avg": sm / num}
+
+
 if __name__ == "__main__":
-    main()
+    analyzer = NumberAnalyzer([1, 2, 3, 4, "bad"])
+    print("Внутри класса:", analyzer.data)
+    print("Чётные:", analyzer.get_even_numbers())
+    print("Статистика:", analyzer.get_even_stats())
