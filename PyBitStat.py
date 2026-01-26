@@ -52,7 +52,7 @@ Notes:
         if not _is_valid_number(x):
             continue
         val = int(x)
-        if val % 2 == 0:
+        if val % 2 != 0:
             continue
         _sum += val
         _count += 1
@@ -467,7 +467,7 @@ def run_save_report_mode():
         except OSError as e:
             print(f"Не сохранил: {e}")
             if e.errno == 13:
-                print("Нет прав. Выбери другу папку (например D:\data\report.txt)")
+                print(r"Нет прав. Выбери другу папку (например D:\data\report.txt)")
             else:
                 print(f"Ошибка записи: {e}")
             continue
