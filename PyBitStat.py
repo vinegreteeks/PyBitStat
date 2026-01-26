@@ -1,5 +1,6 @@
 import os
 
+
 def even_only(lst):
     """
     Возвращает чётные целые числа из lst, сохраняя порядок.
@@ -25,29 +26,29 @@ def even_only(lst):
 
 def even_stats(lst):
     """
-Возвращает сводную статистику по чётным целым из lst.
+    Возвращает сводную статистику по чётным целым из lst.
 
-Args:
-    lst: Последовательность значений любых типов.
+    Args:
+        lst: Последовательность значений любых типов.
 
-Returns:
-    dict[str, int | float] | None: Словарь с ключами:
-        - "sum" (int): сумма;
-        - "min" (int): минимум;
-        - "max" (int): максимум;
-        - "avg" (float): среднее арифметическое.
-    Возвращает None, если после отбора чётных целых список пуст.
+    Returns:
+        dict[str, int | float] | None: Словарь с ключами:
+            - "sum" (int): сумма;
+            - "min" (int): минимум;
+            - "max" (int): максимум;
+            - "avg" (float): среднее арифметическое.
+        Возвращает None, если после отбора чётных целых список пуст.
 
-Notes:
-    - Отбор делает even_only(lst).
-    - Учитываются int и float с целым значением (x.is_integer()).
-    - Игнорируются bool и любые нечисловые типы.
-    - "avg" всегда float (даже если делится нацело).
-"""
+    Notes:
+        - Отбор делает even_only(lst).
+        - Учитываются int и float с целым значением (x.is_integer()).
+        - Игнорируются bool и любые нечисловые типы.
+        - "avg" всегда float (даже если делится нацело).
+    """
     _sum = 0
     _count = 0
-    _min = float('inf')
-    _max = float('-inf')
+    _min = float("inf")
+    _max = float("-inf")
     for x in lst:
         if not _is_valid_number(x):
             continue
@@ -62,17 +63,13 @@ Notes:
             _max = val
     if _count == 0:
         return None
-    return {
-        "sum": _sum,
-        "min": _min,
-        "max": _max,
-        "avg": _sum / _count
-    }
+    return {"sum": _sum, "min": _min, "max": _max, "avg": _sum / _count}
+
 
 def sign_counts(lst):
     """
-Возвращает количество положительных, отрицательных и нулей.
-    
+    Возвращает количество положительных, отрицательных и нулей.
+
     """
     summa = 0
     pos = 0
@@ -94,13 +91,14 @@ def sign_counts(lst):
     else:
         return {"pos": pos, "neg": neg, "zero": zero}
 
+
 def median_even(lst):
     """
     Возвращает медиану чётных целых из lst или None, если после отбора пусто.
     Agrs:
         lst: Последовательность значений любых типов.
 
-    Returns: 
+    Returns:
         int | float | None: Медиана отсортированного списка чётных целых.
             При нечётной длине - средний элемент (int).
             При чётной - среднее двух средних (float).
@@ -113,12 +111,12 @@ def median_even(lst):
     if not ei:
         return None
     ei = sorted(ei)
-    
+
     n = len(ei)
     if n % 2 == 1:
-        return ei[n//2]
+        return ei[n // 2]
     else:
-        return (ei[n//2-1] + ei[n//2])/2
+        return (ei[n // 2 - 1] + ei[n // 2]) / 2
 
 
 def format_even_stats(lst):
@@ -157,12 +155,11 @@ def to_binary_divmod(n):
     bits = []
     if not isinstance(n, int) or n < 0:
         raise ValueError("n must be a non-negative integer")
-    while n > 0: 
+    while n > 0:
         q, r = divmod(n, 2)
         bits.append(str(r))
         n = q
-    return ''.join(reversed(bits))
-
+    return "".join(reversed(bits))
 
 
 def save_even_report(lst, path, fmt="txt"):
@@ -173,10 +170,10 @@ def save_even_report(lst, path, fmt="txt"):
         lst: последовательность любых значений.
         path: путь к файлу (str).
         fmt: "txt" или "csv".
-    
+
     Returns:
         True при успешной записи.
-    
+
     Notes:
         - Статистику берём через even_stats/format_even_stats.
         - TXT: одна строка из format_even_stats + '\n'.
@@ -188,18 +185,17 @@ def save_even_report(lst, path, fmt="txt"):
     if fmt not in ("txt", "csv"):
         raise ValueError("fmt must be 'txt' or 'csv' ")
     es = even_stats(lst)
-    if fmt == 'txt':
+    if fmt == "txt":
         line = "нет чётных целых" if es is None else format_even_stats(lst)
-        with   open(path, "w", encoding="utf-8") as f:
+        with open(path, "w", encoding="utf-8") as f:
             f.write(line + "\n")
-    elif fmt == 'csv':
+    elif fmt == "csv":
         header = "sum,min,max,avg\n"
         with open(path, "w", encoding="utf-8") as f:
             f.write(header)
             if es is not None:
                 f.write(f"{es['sum']},{es['min']},{es['max']},{es['avg']}\n")
-    return True     
-
+    return True
 
 
 def last_bit(n):
@@ -249,6 +245,7 @@ def count_ones(n):
         n //= 2
     return cnt
 
+
 def is_power_of_two(n):
     """
     Принимает int n; if n <= 0 -> False; не-int -> TypeError; возвращает bool.
@@ -258,6 +255,7 @@ def is_power_of_two(n):
     if n <= 0:
         return False
     return (n & (n - 1)) == 0
+
 
 def count_ones_fast(n):
     """
@@ -269,6 +267,7 @@ def count_ones_fast(n):
         cnt += 1
         n &= n - 1
     return cnt
+
 
 def parity(n):
     """
@@ -287,6 +286,7 @@ def parity(n):
     if n < 0:
         raise ValueError("n must be a non-negative integer")
     return True if count_ones_fast(n) % 2 == 1 else False
+
 
 def highest_bit_index(n):
     """
@@ -312,7 +312,8 @@ def highest_bit_index(n):
         raise ValueError("n must be a non-negative integer")
     return n.bit_length() - 1
 
-def is_kth_bit_set(n,k):
+
+def is_kth_bit_set(n, k):
     """
     Принимает int n >= 0 и int k >= 0; не-int -> TypeError; отрицательные -> ValueError; возвращает bool - установлен-ли k-й бит.
     >>> is_kth_bit_set(22, 2)
@@ -324,6 +325,7 @@ def is_kth_bit_set(n,k):
     _check_non_negative_int("k", k)
     return (n & (1 << k)) != 0
 
+
 def clear_kth_bit(n, k):
     """
     Принимает int n>=0 и int k>=0; не-int -> TypeError; n < 0 или k < 0 -> ValueError; возвращает int: n с очищенным k-м битом.
@@ -331,6 +333,7 @@ def clear_kth_bit(n, k):
     _check_non_negative_int("n", n)
     _check_non_negative_int("k", k)
     return n & ~(1 << k)
+
 
 def set_kth_bit(n, k):
     """
@@ -344,22 +347,24 @@ def set_kth_bit(n, k):
     _check_non_negative_int("k", k)
     return n | (1 << k)
 
+
 def toggle_kth_bit(n, k):
     """
     Инвертирует k-й бит числа n.
-    Agrs: 
+    Agrs:
         n (int, >= 0), k (int, >= 0)
     Returns:
         int: n с инвертированным k-м битом.
     Raises:
         TypeError: если n или k не int
         ValueErrorL если n < 0 или k < 0
-    Notes: 
+    Notes:
         Маска 1 << k; операция XOR (^)
     """
     _check_non_negative_int("n", n)
     _check_non_negative_int("k", k)
     return n ^ (1 << k)
+
 
 def _is_valid_number(x):
     """
@@ -367,23 +372,25 @@ def _is_valid_number(x):
     """
     if isinstance(x, bool):
         return False
-    if not isinstance(x,(int, float)):
+    if not isinstance(x, (int, float)):
         return False
     if isinstance(x, float) and not x.is_integer():
         return False
     return True
 
+
 def _check_non_negative_int(name, value):
     """
-    Внутренняя функция-проверка: name(str), value - должен быть int >= 0. 
-    TypeError - если не int; 
+    Внутренняя функция-проверка: name(str), value - должен быть int >= 0.
+    TypeError - если не int;
     ValueError - если < 0.
     """
     if type(value) is not int:
         raise TypeError(f"{name} must be int")
     if value < 0:
         raise ValueError(f"{name} must be a non-negative integer")
-    
+
+
 def main():
     while True:
         show_menu()
@@ -399,6 +406,7 @@ def main():
             run_to_binary_mode()
         elif choice == "4":
             run_bit_calc_mode()
+
 
 def run_list_analysis_mode():
     print("\nРежим: анализ списка чисел.")
@@ -425,9 +433,12 @@ def run_list_analysis_mode():
         stats = even_stats(evens)
         print(format_even_stats(evens))
         sc = sign_counts(nums)
-        print(f"Положительных: {sc['pos']}, отрицательных: {sc['neg']}, нулей: {sc['zero']}")
+        print(
+            f"Положительных: {sc['pos']}, отрицательных: {sc['neg']}, нулей: {sc['zero']}"
+        )
     print("\nВозвращаюсь в главное меню...")
     print()
+
 
 def run_save_report_mode():
     while True:
@@ -480,10 +491,11 @@ def run_save_report_mode():
     print("Возвращаюсь в главное меню...")
     return
 
+
 def run_to_binary_mode():
     while True:
         raw = input("введи неотрицательное целое (0 = выход): ").strip()
-        if raw == "0": 
+        if raw == "0":
             print("Возвращаюсь в меню...")
             return
         try:
@@ -494,11 +506,14 @@ def run_to_binary_mode():
             continue
         print(f"Двоичное: {b}")
 
+
 def run_bit_calc_mode():
     num_base = 0
     while True:
         print()
-        print("1 - Показать бит\n2 - Поменять бит на 1\n3 - Обнулить бит\n4 - Поменять бит на противоположный\n0 - Новое число/Выход")
+        print(
+            "1 - Показать бит\n2 - Поменять бит на 1\n3 - Обнулить бит\n4 - Поменять бит на противоположный\n0 - Новое число/Выход"
+        )
         print()
         raw = input("Твой вариант: ").strip()
         if raw == "0":
@@ -531,7 +546,9 @@ def run_bit_calc_mode():
                 print("Показать бит")
                 if num_base >= 0:
                     print(f"Число: {num_base} (двочное: {bin(num_base)[2:]})")
-                    pos_bit = int(input("Позиция(с правого края, счет с нуля): ").strip())
+                    pos_bit = int(
+                        input("Позиция(с правого края, счет с нуля): ").strip()
+                    )
                     if pos_bit >= 0:
                         print()
                         print(f"Бит: {(num_base >> pos_bit) & 1}")
@@ -550,10 +567,14 @@ def run_bit_calc_mode():
                 print(("Поменять бит на 1"))
                 if num_base >= 0:
                     print(f"Число: {num_base}, (двочное: {bin(num_base)[2:]})")
-                    pos_bit = int(input("Позиция(с правого края счет с нуля): ").strip())
+                    pos_bit = int(
+                        input("Позиция(с правого края счет с нуля): ").strip()
+                    )
                     if pos_bit >= 0:
                         print()
-                        print(f"Получилось число: {set_kth_bit(num_base, pos_bit)} (двоичное: {bin(set_kth_bit(num_base, pos_bit))[2:]})")
+                        print(
+                            f"Получилось число: {set_kth_bit(num_base, pos_bit)} (двоичное: {bin(set_kth_bit(num_base, pos_bit))[2:]})"
+                        )
                     else:
                         print("Число должно быть больше нуля.")
                         continue
@@ -569,10 +590,14 @@ def run_bit_calc_mode():
                 print("Обнулить бит")
                 if num_base >= 0:
                     print(f"Число: {num_base} (двочное: {bin(num_base)[2:]})")
-                    pos_clear = int(input("позиция(с правого края счет с нуля): ").strip())
+                    pos_clear = int(
+                        input("позиция(с правого края счет с нуля): ").strip()
+                    )
                     if pos_clear >= 0:
                         print()
-                        print(f"Получилось число: {clear_kth_bit(num_base, pos_clear)} (двоичное: {bin(clear_kth_bit(num_base, pos_clear))[2:]})")
+                        print(
+                            f"Получилось число: {clear_kth_bit(num_base, pos_clear)} (двоичное: {bin(clear_kth_bit(num_base, pos_clear))[2:]})"
+                        )
                     else:
                         print("Число должно быть больше нуля.")
                         continue
@@ -588,10 +613,14 @@ def run_bit_calc_mode():
                 print("Поменять бит на противоположный")
                 if num_base >= 0:
                     print(f"Число: {num_base} (двочное: {bin(num_base)[2:]})")
-                    pos_toggle = int(input("Позиция(с правого края счет с нуля): ").strip())
+                    pos_toggle = int(
+                        input("Позиция(с правого края счет с нуля): ").strip()
+                    )
                     if pos_toggle >= 0:
                         print()
-                        print(f"Получилось число: {toggle_kth_bit(num_base, pos_toggle)} (двоичное: {bin(toggle_kth_bit(num_base, pos_toggle))[2:]})")
+                        print(
+                            f"Получилось число: {toggle_kth_bit(num_base, pos_toggle)} (двоичное: {bin(toggle_kth_bit(num_base, pos_toggle))[2:]})"
+                        )
                     else:
                         print("Число должно быть больше нуля.")
                         continue
@@ -606,9 +635,12 @@ def run_bit_calc_mode():
             print("Выбери вариант 0-4")
             continue
 
+
 def show_menu():
     print("\n1 - Анализ  списка чисел")
-    print("    Введёшь список - покажу  чётные числа, и их сумму, минимум, максимум, среднее  и сколько там + / - / нулей")
+    print(
+        "    Введёшь список - покажу  чётные числа, и их сумму, минимум, максимум, среднее  и сколько там + / - / нулей"
+    )
     print()
     print("2 - Сохранение  отчёта по  чётным числам")
     print("    Сохраняю твой  отчёт в читаемый  файл")
@@ -617,7 +649,9 @@ def show_menu():
     print("    Введешь число - получишь  его в двоичном  коде")
     print()
     print("4 - Битовый калькулятор")
-    print("    Ты можешь тут  играться с двоичными числами:  узнать, что на определенной  позиции - определённое число (0 или 1), и поменять это")
+    print(
+        "    Ты можешь тут  играться с двоичными числами:  узнать, что на определенной  позиции - определённое число (0 или 1), и поменять это"
+    )
     print()
     print("0 - Выход")
 
