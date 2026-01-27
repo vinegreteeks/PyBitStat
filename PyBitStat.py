@@ -1,97 +1,6 @@
 import os
 
 
-def even_only(lst):
-    """
-    Возвращает чётные целые числа из lst, сохраняя порядок.
-    Args:
-        lst: Последовательность значений (int/float/любой тип).
-
-    Returns:
-        list[int]: Список чётных целых. Пустой, если чётных нет.
-
-    Notes:
-        - Берём int и float с целым значением (x.is_integer()).
-        - Игнорируем bool и любые нечисловые типы.
-    """
-    res = []
-    for x in lst:
-        if not _is_valid_number(x):
-            continue
-        xi = int(x)
-        if xi % 2 == 0:
-            res.append(xi)
-    return res
-
-
-def even_stats(lst):
-    """
-    Возвращает сводную статистику по чётным целым из lst.
-
-    Args:
-        lst: Последовательность значений любых типов.
-
-    Returns:
-        dict[str, int | float] | None: Словарь с ключами:
-            - "sum" (int): сумма;
-            - "min" (int): минимум;
-            - "max" (int): максимум;
-            - "avg" (float): среднее арифметическое.
-        Возвращает None, если после отбора чётных целых список пуст.
-
-    Notes:
-        - Отбор делает even_only(lst).
-        - Учитываются int и float с целым значением (x.is_integer()).
-        - Игнорируются bool и любые нечисловые типы.
-        - "avg" всегда float (даже если делится нацело).
-    """
-    _sum = 0
-    _count = 0
-    _min = float("inf")
-    _max = float("-inf")
-    for x in lst:
-        if not _is_valid_number(x):
-            continue
-        val = int(x)
-        if val % 2 != 0:
-            continue
-        _sum += val
-        _count += 1
-        if val < _min:
-            _min = val
-        if val > _max:
-            _max = val
-    if _count == 0:
-        return None
-    return {"sum": _sum, "min": _min, "max": _max, "avg": _sum / _count}
-
-
-def sign_counts(lst):
-    """
-    Возвращает количество положительных, отрицательных и нулей.
-
-    """
-    summa = 0
-    pos = 0
-    neg = 0
-    zero = 0
-    for x in lst:
-        if not _is_valid_number(x):
-            continue
-        xi = int(x)
-        if xi > 0:
-            pos += 1
-        elif xi < 0:
-            neg += 1
-        else:
-            zero += 1
-    summa = pos + neg + zero
-    if summa == 0:
-        return None
-    else:
-        return {"pos": pos, "neg": neg, "zero": zero}
-
-
 def median_even(lst):
     """
     Возвращает медиану чётных целых из lst или None, если после отбора пусто.
@@ -107,7 +16,7 @@ def median_even(lst):
         - Отбор делает even_only(lst): учитывает int и float с целым значением, игнориует bool и нечисловые.
         - Порядок: отбор -> сортировка -> вычисление медианы.
     """
-    ei = even_only(lst)
+    ei = analyzer.get_even_numbers(lst)
     if not ei:
         return None
     ei = sorted(ei)
@@ -117,22 +26,6 @@ def median_even(lst):
         return ei[n // 2]
     else:
         return (ei[n // 2 - 1] + ei[n // 2]) / 2
-
-
-def format_even_stats(lst):
-    """
-    Кратко: строка отчёт по чётным числам из lst; если нет чётных - специальная фраза.
-    Agrs:
-        lst: последовательность любых значений.
-    Returns:
-        str: 'sum=..., min:..., max:..., avg:..."
-    Notes:
-        - Использует evem_stats(lst).
-    """
-    es = even_stats(lst)
-    if es is None:
-        return "нет чётных чисел"
-    return f"sum={es['sum']}, min={es['min']}, max={es['max']}, avg={es['avg']}"
 
 
 def to_binary_divmod(n):
@@ -160,42 +53,6 @@ def to_binary_divmod(n):
         bits.append(str(r))
         n = q
     return "".join(reversed(bits))
-
-
-def save_even_report(lst, path, fmt="txt"):
-    """
-    Сохраняет отчёт по чётным числам из lst в файл.
-
-    Agrs:
-        lst: последовательность любых значений.
-        path: путь к файлу (str).
-        fmt: "txt" или "csv".
-
-    Returns:
-        True при успешной записи.
-
-    Notes:
-        - Статистику берём через even_stats/format_even_stats.
-        - TXT: одна строка из format_even_stats + '\n'.
-        - CSV: первая строка "sum, min, max, avg"; если чётных нет - только заголовок;
-            иначе строка
-        "sum,min,max,avg\nS,M,X,A\n
-        - При неверном fmt -> ValueError.
-    """
-    if fmt not in ("txt", "csv"):
-        raise ValueError("fmt must be 'txt' or 'csv' ")
-    es = even_stats(lst)
-    if fmt == "txt":
-        line = "нет чётных целых" if es is None else format_even_stats(lst)
-        with open(path, "w", encoding="utf-8") as f:
-            f.write(line + "\n")
-    elif fmt == "csv":
-        header = "sum,min,max,avg\n"
-        with open(path, "w", encoding="utf-8") as f:
-            f.write(header)
-            if es is not None:
-                f.write(f"{es['sum']},{es['min']},{es['max']},{es['avg']}\n")
-    return True
 
 
 def last_bit(n):
@@ -423,16 +280,17 @@ def run_list_analysis_mode():
         print("Ошибка: введи только целые числа через пробел. Пример: 1 2 3 10 -5 0")
         return
     print("Ок, распознал числа: ", nums)
-    evens = even_only(nums)
+    analyzer = NumberAnalyzer(nums)
+    evens = analyzer.get_even_numbers()
     if not evens:
         print("Чётных нет.")
         return
     else:
         print("Чётные числа:", evens)
         print("Считаю статистику...")
-        stats = even_stats(evens)
-        print(format_even_stats(evens))
-        sc = sign_counts(nums)
+        stats = analyzer.get_even_stats()
+        print(stats)
+        sc = analyzer.get_sign_counts()
         print(
             f"Положительных: {sc['pos']}, отрицательных: {sc['neg']}, нулей: {sc['zero']}"
         )
@@ -456,6 +314,7 @@ def run_save_report_mode():
         except ValueError:
             print("Ошибка: введи только целые числа через пробел.")
             continue
+        analyzer = NumberAnalyzer(nums)
         path = input("Путь к файлу (например report.txt): ").strip()
         fmt = input("Формат txt/csv (по умолчанию txt): ").strip().lower()
         if fmt == "":
@@ -474,7 +333,7 @@ def run_save_report_mode():
         print(f"Сохраняю в: {path}")
         ok = False
         try:
-            ok = save_even_report(nums, path, fmt)
+            ok = analyzer.save_to_file(path, fmt)
         except OSError as e:
             print(f"Не сохранил: {e}")
             if e.errno == 13:
@@ -674,7 +533,6 @@ def normalize_path(path: str, fmt: str):
     return path, fmt
 
 
-
 class NumberAnalyzer:
     def __init__(self, data):
         """
@@ -694,7 +552,7 @@ class NumberAnalyzer:
         if isinstance(x, float) and not x.is_integer():
             return False
         return True
-    
+
     def get_even_numbers(self):
         evens = []
         for x in self.data:
@@ -712,9 +570,54 @@ class NumberAnalyzer:
         num = len(evens)
         return {"sum": sm, "min": mn, "max": mx, "avg": sm / num}
 
+    def get_sign_counts(self):
+        summa = 0
+        pos = 0
+        neg = 0
+        zero = 0
+        for x in self.data:
+            xi = int(x)
+            if xi > 0:
+                pos += 1
+            elif xi < 0:
+                neg += 1
+            else:
+                zero += 1
+        summa = pos + neg + zero
+        if summa == 0:
+            return None
+        else:
+            return {"pos": pos, "neg": neg, "zero": zero}
+
+    def save_to_file(self, path, fmt="txt"):
+        stats = self.get_even_stats()
+        if fmt == "txt":
+            if stats is None:
+                content = "Нет чётных целых чисел для анализа."
+            else:
+                content = f"Статистика чётных чисел:\nСумма: {stats['sum']}\nМинимум: {stats['min']}\nМаксимум: {stats['max']}\nСреднее: {stats['avg']}"
+
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(content + "\n")
+
+        elif fmt == "csv":
+            header = "sum,min,max,avg\n"
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(header)
+                if stats is not None:
+                    f.write(
+                        f"{stats['sum']},{stats['min']},{stats['max']},{stats['avg']}\n"
+                    )
+        else:
+            raise ValueError("Формат должен быть 'txt' или 'csv'")
+
+        return True
+
 
 if __name__ == "__main__":
     analyzer = NumberAnalyzer([1, 2, 3, 4, "bad"])
     print("Внутри класса:", analyzer.data)
     print("Чётные:", analyzer.get_even_numbers())
     print("Статистика:", analyzer.get_even_stats())
+    print("знаки:", analyzer.get_sign_counts())
+    main()

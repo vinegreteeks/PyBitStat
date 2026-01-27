@@ -1,46 +1,52 @@
 import pytest
-from PyBitStat import even_only, even_stats, to_binary_divmod, _is_valid_number
+from PyBitStat import NumberAnalyzer
 
 
-# --- тесты для even_only ---
-def test_even_only_basic():
-    # простой кейс
-    assert even_only([1, 2, 3, 4]) == [2, 4]
+# --- Тесты для инициализации и get_even_numbers ---
+def test_analyzer_basic():
+    analyzer = NumberAnalyzer([1, 2, 3, 4])
+    assert analyzer.data == [1, 2, 3, 4]
+    assert analyzer.get_even_numbers() == [2, 4]
 
 
-def test_even_only_mixed_types():
-    # проверка фильтрации мусора
+def test_analyzer_mixed_types():
     data = [1.0, 2.0, 3.5, True, "7", 10]
-    # ожидаем: 2.0 (это int 2) и 10.
-    # 3.5 не целое, True - бул, "7" - строка.
-    assert even_only(data) == [2, 10]
+    analyzer = NumberAnalyzer(data)
+    assert analyzer.get_even_numbers() == [2, 10]
 
 
-def test_even_only_empty():
-    assert even_only([]) == []
-    assert even_only([1, 3, 5]) == []
+def test_analyzer_empty():
+    analyzer = NumberAnalyzer([])
+    assert analyzer.get_even_numbers() == []
+
+    analyzer_odds = NumberAnalyzer([1, 3, 5])
+    assert analyzer_odds.get_even_numbers() == []
 
 
-# --- тесты для even_stats ---
-def test_even_stats_normal():
-    data = [1, 2, 3, 4]
-    stats = even_stats(data)
-    # проверяем ключи и значения
+# --- Тесты для get_even_stats ---
+def test_stats_normal():
+    analyzer = NumberAnalyzer([1, 2, 3, 4])
+    stats = analyzer.get_even_stats()
     assert stats["sum"] == 6
     assert stats["min"] == 2
     assert stats["max"] == 4
     assert stats["avg"] == 3.0
 
 
-def test_even_stats_none():
-    # если четных нет, должно быть None
-    assert even_stats([1, 3, 5]) is None
+def test_stats_none():
+    analyzer = NumberAnalyzer([1, 3, 5])
+    assert analyzer.get_even_stats() is None
 
 
-# --- тесты для вспомогательной функции ---
-def test_is_valid_number():
-    assert _is_valid_number(5) is True
-    assert _is_valid_number(5.0) is True
-    assert _is_valid_number(5.1) is False
-    assert _is_valid_number(True) is False  # bool ломает математику
-    assert _is_valid_number("5") is False
+# --- Тесты для get_sign_counts ---
+def test_sign_counts():
+    analyzer = NumberAnalyzer([10, -5, 0, 2])
+    counts = analyzer.get_sign_counts()
+    assert counts["pos"] == 2  # 10, 2
+    assert counts["neg"] == 1  # -5
+    assert counts["zero"] == 1  # 0
+
+
+def test_sign_counts_empty():
+    analyzer = NumberAnalyzer([])
+    assert analyzer.get_sign_counts() is None
