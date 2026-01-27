@@ -1,5 +1,6 @@
 import os
 
+
 def main():
     while True:
         show_menu()
@@ -362,9 +363,9 @@ class NumberAnalyzer:
                     )
         else:
             raise ValueError("Формат должен быть 'txt' или 'csv'")
-        
+
         return True
-    
+
     def __str__(self):
         return f"NumberAnalyzer: обработано {len(self.data)} чисел. Данные: {self.data}"
 
@@ -394,7 +395,7 @@ class NumberAnalyzer:
             bits.append(str(r))
             n = q
         return "".join(reversed(bits))
-   
+
     @staticmethod
     def set_kth_bit(n, k):
         """
@@ -407,7 +408,7 @@ class NumberAnalyzer:
         NumberAnalyzer._check_non_negative_int("n", n)
         NumberAnalyzer._check_non_negative_int("k", k)
         return n | (1 << k)
-    
+
     @staticmethod
     def toggle_kth_bit(n, k):
         """
@@ -425,7 +426,7 @@ class NumberAnalyzer:
         NumberAnalyzer._check_non_negative_int("n", n)
         NumberAnalyzer._check_non_negative_int("k", k)
         return n ^ (1 << k)
-    
+
     @staticmethod
     def clear_kth_bit(n, k):
         """
@@ -434,7 +435,7 @@ class NumberAnalyzer:
         NumberAnalyzer._check_non_negative_int("n", n)
         NumberAnalyzer._check_non_negative_int("k", k)
         return n & ~(1 << k)
-    
+
     @staticmethod
     def _check_non_negative_int(name, value):
         """
@@ -446,6 +447,7 @@ class NumberAnalyzer:
             raise TypeError(f"{name} must be int")
         if value < 0:
             raise ValueError(f"{name} must be a non-negative integer")
+
 
 if __name__ == "__main__":
     analyzer = NumberAnalyzer([1, 2, 3, 4, "bad"])
