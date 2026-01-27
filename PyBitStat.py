@@ -1,253 +1,5 @@
 import os
 
-
-def median_even(lst):
-    """
-    Возвращает медиану чётных целых из lst или None, если после отбора пусто.
-    Agrs:
-        lst: Последовательность значений любых типов.
-
-    Returns:
-        int | float | None: Медиана отсортированного списка чётных целых.
-            При нечётной длине - средний элемент (int).
-            При чётной - среднее двух средних (float).
-            Если подходящих значений нет - None.
-    Notes:
-        - Отбор делает even_only(lst): учитывает int и float с целым значением, игнориует bool и нечисловые.
-        - Порядок: отбор -> сортировка -> вычисление медианы.
-    """
-    ei = analyzer.get_even_numbers(lst)
-    if not ei:
-        return None
-    ei = sorted(ei)
-
-    n = len(ei)
-    if n % 2 == 1:
-        return ei[n // 2]
-    else:
-        return (ei[n // 2 - 1] + ei[n // 2]) / 2
-
-
-def to_binary_divmod(n):
-    """
-    Возвращает двоичную запись неотрицательного целого n строкой.
-    >>> to_binary_divmod(0)
-    '0'
-    >>> to_binary_divmod(37)
-    '100101'
-    >>> to_binary_divmod(26)
-    '11010'
-    >>> to_binary_divmod(-1)
-    Traceback (most recent call last):
-    ...
-    ValueError: n must be a non-negative integer
-
-    """
-    if n == 0:
-        return "0"
-    bits = []
-    if not isinstance(n, int) or n < 0:
-        raise ValueError("n must be a non-negative integer")
-    while n > 0:
-        q, r = divmod(n, 2)
-        bits.append(str(r))
-        n = q
-    return "".join(reversed(bits))
-
-
-def last_bit(n):
-    """
-    Возвращает последний бит (0 или 1) для неотрицательного целого n.
-    >>> last_bit(0)
-    0
-    >>> last_bit(7)
-    1
-    >>> last_bit(8)
-    0
-    >>> last_bit(-1)
-    Traceback (most recent call last):
-    ...
-    ValueError: n must be a non-negative integer
-    """
-    if not isinstance(n, int) or n < 0:
-        raise ValueError("n must be a non-negative integer")
-    return n & 1
-
-
-def count_ones(n):
-    """
-    Считает количество единичных битов в двоичной записи неотрицательного целого n.
-    Agrs:
-        n: int - неотрицательное целое.
-    Returns:
-        int - число единичных битов.
-    Notes:
-        При неверном входе выбрасывает ValueError.
-    >>> count_ones(0)
-    0
-    >>> count_ones(7)
-    3
-    >>> count_ones(255)
-    8
-    >>> count_ones(-1)
-    Traceback (most recent call last):
-    ...
-    ValueError: n must be a non-negative integer
-    """
-    if not isinstance(n, int) or n < 0:
-        raise ValueError("n must be a non-negative integer")
-    cnt = 0
-    while n > 0:
-        cnt += n & 1
-        n //= 2
-    return cnt
-
-
-def is_power_of_two(n):
-    """
-    Принимает int n; if n <= 0 -> False; не-int -> TypeError; возвращает bool.
-    """
-    if not isinstance(n, int):
-        raise TypeError("n must be int")
-    if n <= 0:
-        return False
-    return (n & (n - 1)) == 0
-
-
-def count_ones_fast(n):
-    """
-    Принимает int n >= 0; не-int -> TypeError; n < 0 -> ValueError; возвращает int - число единичных бит.
-    """
-    _check_non_negative_int("n", n)
-    cnt = 0
-    while n:
-        cnt += 1
-        n &= n - 1
-    return cnt
-
-
-def parity(n):
-    """
-    Принимает int n>=0; не-int -> TyprError; n<0 -> ValueError; возвращает bool: нечётное число единичных бит.
-    >>> parity('10')
-    Traceback (most recent call last):
-    ...
-    TypeError: n must be int
-    >>> parity(-1)
-    Traceback (most recent call last):
-    ...
-    ValueError: n must be a non-negative integer
-    """
-    if not isinstance(n, int):
-        raise TypeError("n must be int")
-    if n < 0:
-        raise ValueError("n must be a non-negative integer")
-    return True if count_ones_fast(n) % 2 == 1 else False
-
-
-def highest_bit_index(n):
-    """
-    Принимает int n>=0; не-int -> TypeError; n<0 -> ValueError; возвращает int|None - индекс старшего установленного бита; для 0 -> None.
-    >>> highest_bit_index(0) is None
-    True
-    >>> highest_bit_index(32)
-    5
-    >>> highest_bit_index('10')
-    Traceback (most recent call last):
-    ...
-    TypeError: n must be int
-    >>> highest_bit_index(-1)
-    Traceback (most recent call last):
-    ...
-    ValueError: n must be a non-negative integer
-    """
-    if not isinstance(n, int):
-        raise TypeError("n must be int")
-    if n == 0:
-        return None
-    if n < 0:
-        raise ValueError("n must be a non-negative integer")
-    return n.bit_length() - 1
-
-
-def is_kth_bit_set(n, k):
-    """
-    Принимает int n >= 0 и int k >= 0; не-int -> TypeError; отрицательные -> ValueError; возвращает bool - установлен-ли k-й бит.
-    >>> is_kth_bit_set(22, 2)
-    True
-    >>> is_kth_bit_set(0, 5)
-    False
-    """
-    _check_non_negative_int("n", n)
-    _check_non_negative_int("k", k)
-    return (n & (1 << k)) != 0
-
-
-def clear_kth_bit(n, k):
-    """
-    Принимает int n>=0 и int k>=0; не-int -> TypeError; n < 0 или k < 0 -> ValueError; возвращает int: n с очищенным k-м битом.
-    """
-    _check_non_negative_int("n", n)
-    _check_non_negative_int("k", k)
-    return n & ~(1 << k)
-
-
-def set_kth_bit(n, k):
-    """
-    Кратко: "Включает k-й бит числа n".
-    Agrs: n (int, >= 0, bool не принимаем), k (int, >=0).
-    Returns: int.
-    Raises: TypeError(не int/bool), ValueError(n<0 или k<0)
-    Notes: маска 1 << k.
-    """
-    _check_non_negative_int("n", n)
-    _check_non_negative_int("k", k)
-    return n | (1 << k)
-
-
-def toggle_kth_bit(n, k):
-    """
-    Инвертирует k-й бит числа n.
-    Agrs:
-        n (int, >= 0), k (int, >= 0)
-    Returns:
-        int: n с инвертированным k-м битом.
-    Raises:
-        TypeError: если n или k не int
-        ValueErrorL если n < 0 или k < 0
-    Notes:
-        Маска 1 << k; операция XOR (^)
-    """
-    _check_non_negative_int("n", n)
-    _check_non_negative_int("k", k)
-    return n ^ (1 << k)
-
-
-def _is_valid_number(x):
-    """
-    проверяет, подходит ли число (int или float-целое, а не bool)
-    """
-    if isinstance(x, bool):
-        return False
-    if not isinstance(x, (int, float)):
-        return False
-    if isinstance(x, float) and not x.is_integer():
-        return False
-    return True
-
-
-def _check_non_negative_int(name, value):
-    """
-    Внутренняя функция-проверка: name(str), value - должен быть int >= 0.
-    TypeError - если не int;
-    ValueError - если < 0.
-    """
-    if type(value) is not int:
-        raise TypeError(f"{name} must be int")
-    if value < 0:
-        raise ValueError(f"{name} must be a non-negative integer")
-
-
 def main():
     while True:
         show_menu()
@@ -359,7 +111,7 @@ def run_to_binary_mode():
             return
         try:
             n = int(raw)
-            b = to_binary_divmod(n)
+            b = NumberAnalyzer.to_binary_divmod(n)
         except ValueError as e:
             print(f"Ошибка: {e}")
             continue
@@ -432,7 +184,7 @@ def run_bit_calc_mode():
                     if pos_bit >= 0:
                         print()
                         print(
-                            f"Получилось число: {set_kth_bit(num_base, pos_bit)} (двоичное: {bin(set_kth_bit(num_base, pos_bit))[2:]})"
+                            f"Получилось число: {NumberAnalyzer.set_kth_bit(num_base, pos_bit)} (двоичное: {bin(NumberAnalyzer.set_kth_bit(num_base, pos_bit))[2:]})"
                         )
                     else:
                         print("Число должно быть больше нуля.")
@@ -455,7 +207,7 @@ def run_bit_calc_mode():
                     if pos_clear >= 0:
                         print()
                         print(
-                            f"Получилось число: {clear_kth_bit(num_base, pos_clear)} (двоичное: {bin(clear_kth_bit(num_base, pos_clear))[2:]})"
+                            f"Получилось число: {NumberAnalyzer.clear_kth_bit(num_base, pos_clear)} (двоичное: {bin(NumberAnalyzer.clear_kth_bit(num_base, pos_clear))[2:]})"
                         )
                     else:
                         print("Число должно быть больше нуля.")
@@ -478,7 +230,7 @@ def run_bit_calc_mode():
                     if pos_toggle >= 0:
                         print()
                         print(
-                            f"Получилось число: {toggle_kth_bit(num_base, pos_toggle)} (двоичное: {bin(toggle_kth_bit(num_base, pos_toggle))[2:]})"
+                            f"Получилось число: {NumberAnalyzer.toggle_kth_bit(num_base, pos_toggle)} (двоичное: {bin(NumberAnalyzer.toggle_kth_bit(num_base, pos_toggle))[2:]})"
                         )
                     else:
                         print("Число должно быть больше нуля.")
@@ -610,13 +362,94 @@ class NumberAnalyzer:
                     )
         else:
             raise ValueError("Формат должен быть 'txt' или 'csv'")
-
+        
         return True
+    
+    def __str__(self):
+        return f"NumberAnalyzer: обработано {len(self.data)} чисел. Данные: {self.data}"
 
+    @staticmethod
+    def to_binary_divmod(n):
+        """
+        Возвращает двоичную запись неотрицательного целого n строкой.
+        >>> to_binary_divmod(0)
+        '0'
+        >>> to_binary_divmod(37)
+        '100101'
+        >>> to_binary_divmod(26)
+        '11010'
+        >>> to_binary_divmod(-1)
+        Traceback (most recent call last):
+        ...
+        ValueError: n must be a non-negative integer
+
+        """
+        if n == 0:
+            return "0"
+        bits = []
+        if not isinstance(n, int) or n < 0:
+            raise ValueError("n must be a non-negative integer")
+        while n > 0:
+            q, r = divmod(n, 2)
+            bits.append(str(r))
+            n = q
+        return "".join(reversed(bits))
+   
+    @staticmethod
+    def set_kth_bit(n, k):
+        """
+        Кратко: "Включает k-й бит числа n".
+        Agrs: n (int, >= 0, bool не принимаем), k (int, >=0).
+        Returns: int.
+        Raises: TypeError(не int/bool), ValueError(n<0 или k<0)
+        Notes: маска 1 << k.
+        """
+        NumberAnalyzer._check_non_negative_int("n", n)
+        NumberAnalyzer._check_non_negative_int("k", k)
+        return n | (1 << k)
+    
+    @staticmethod
+    def toggle_kth_bit(n, k):
+        """
+        Инвертирует k-й бит числа n.
+        Agrs:
+            n (int, >= 0), k (int, >= 0)
+        Returns:
+            int: n с инвертированным k-м битом.
+        Raises:
+            TypeError: если n или k не int
+            ValueErrorL если n < 0 или k < 0
+        Notes:
+            Маска 1 << k; операция XOR (^)
+        """
+        NumberAnalyzer._check_non_negative_int("n", n)
+        NumberAnalyzer._check_non_negative_int("k", k)
+        return n ^ (1 << k)
+    
+    @staticmethod
+    def clear_kth_bit(n, k):
+        """
+        Принимает int n>=0 и int k>=0; не-int -> TypeError; n < 0 или k < 0 -> ValueError; возвращает int: n с очищенным k-м битом.
+        """
+        NumberAnalyzer._check_non_negative_int("n", n)
+        NumberAnalyzer._check_non_negative_int("k", k)
+        return n & ~(1 << k)
+    
+    @staticmethod
+    def _check_non_negative_int(name, value):
+        """
+        Внутренняя функция-проверка: name(str), value - должен быть int >= 0.
+        TypeError - если не int;
+        ValueError - если < 0.
+        """
+        if type(value) is not int:
+            raise TypeError(f"{name} must be int")
+        if value < 0:
+            raise ValueError(f"{name} must be a non-negative integer")
 
 if __name__ == "__main__":
     analyzer = NumberAnalyzer([1, 2, 3, 4, "bad"])
-    print("Внутри класса:", analyzer.data)
+    print(analyzer)
     print("Чётные:", analyzer.get_even_numbers())
     print("Статистика:", analyzer.get_even_stats())
     print("знаки:", analyzer.get_sign_counts())
