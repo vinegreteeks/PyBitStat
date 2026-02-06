@@ -4,7 +4,7 @@ import os
 def main():
     while True:
         show_menu()
-        choice = input("\nВыбери пункт меню (0-4): ").strip()
+        choice = input("\nВыбери пункт меню (0-5): ").strip()
         if choice == "0":
             print("Выход из программы.")
             break
@@ -16,6 +16,8 @@ def main():
             run_to_binary_mode()
         elif choice == "4":
             run_bit_calc_mode()
+        elif choice == "5":
+            run_binary_search_mode()
 
 
 def run_list_analysis_mode():
@@ -265,7 +267,35 @@ def show_menu():
         "    Ты можешь тут  играться с двоичными числами:  узнать, что на определенной  позиции - определённое число (0 или 1), и поменять это"
     )
     print()
+    print("5 - Бинарный поиск")
+    print()
     print("0 - Выход")
+
+
+def run_binary_search_mode():
+    print("\nРежим: Бинарный поиск")
+    raw = input("Введите список чисел через пробел: ").strip()
+    try:
+        nums = [int(x) for x in raw.split()]
+    except ValueError:
+        print("Ошибка ввода")
+        return
+    analyzer = NumberAnalyzer(nums)
+    print(f"Список отсортирован: {analyzer.data}")
+
+    target_raw = input("Какое число ищем? ").strip()
+    try:
+        target = int(target_raw)
+    except ValueError:
+        return
+
+    idx = analyzer.find_number(target)
+
+    if idx != -1:
+        print(f"Найдено! Индекс в отсортированном списке: {idx}")
+    else:
+        print("Число не найдено.")
+
 
 
 def normalize_path(path: str, fmt: str):
@@ -296,7 +326,22 @@ class NumberAnalyzer:
         for x in data:
             if self._is_valid_number(x):
                 self.data.append(int(x))
+        self.data.sort()
 
+    def find_number(self, target):
+        left = 0
+        right = len(self.data) - 1
+        while left <= right:
+            mid = (left + right)//2
+            current = self.data[mid]
+            if current == target:
+                return mid
+            elif current < target: 
+                left = mid + 1
+            else:
+                right = mid - 1
+        return -1
+    
     def _is_valid_number(self, x):
         if isinstance(x, bool):
             return False
@@ -369,6 +414,8 @@ class NumberAnalyzer:
     def __str__(self):
         return f"NumberAnalyzer: обработано {len(self.data)} чисел. Данные: {self.data}"
 
+ 
+    
     @staticmethod
     def to_binary_divmod(n):
         """
