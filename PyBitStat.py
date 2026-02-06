@@ -297,7 +297,6 @@ def run_binary_search_mode():
         print("Число не найдено.")
 
 
-
 def normalize_path(path: str, fmt: str):
     path = path.strip()
     if not os.path.dirname(path):
@@ -332,16 +331,16 @@ class NumberAnalyzer:
         left = 0
         right = len(self.data) - 1
         while left <= right:
-            mid = (left + right)//2
+            mid = (left + right) // 2
             current = self.data[mid]
             if current == target:
                 return mid
-            elif current < target: 
+            elif current < target:
                 left = mid + 1
             else:
                 right = mid - 1
         return -1
-    
+
     def _is_valid_number(self, x):
         if isinstance(x, bool):
             return False
@@ -414,8 +413,6 @@ class NumberAnalyzer:
     def __str__(self):
         return f"NumberAnalyzer: обработано {len(self.data)} чисел. Данные: {self.data}"
 
- 
-    
     @staticmethod
     def to_binary_divmod(n):
         """
