@@ -1,4 +1,5 @@
 import os
+from typing import List, Dict, Optional, Union
 
 
 def main():
@@ -316,7 +317,7 @@ def normalize_path(path: str, fmt: str):
 
 
 class NumberAnalyzer:
-    def __init__(self, data):
+    def __init__(self, data: List[Union[int, float, str, bool]]) -> None:
         """
         Конструктор. Запускается один раз при создании.
         Здесь мы сохраняем данные и валидируем их.
@@ -327,7 +328,7 @@ class NumberAnalyzer:
                 self.data.append(int(x))
         self.data.sort()
 
-    def find_number(self, target):
+    def find_number(self, target: int) -> int:
         left = 0
         right = len(self.data) - 1
         while left <= right:
@@ -350,14 +351,14 @@ class NumberAnalyzer:
             return False
         return True
 
-    def get_even_numbers(self):
+    def get_even_numbers(self) -> List[int]:
         evens = []
         for x in self.data:
             if x % 2 == 0:
                 evens.append(x)
         return evens
 
-    def get_even_stats(self):
+    def get_even_stats(self) -> Optional[Dict[str, float]]:
         evens = self.get_even_numbers()
         if not evens:
             return None
@@ -367,7 +368,7 @@ class NumberAnalyzer:
         num = len(evens)
         return {"sum": sm, "min": mn, "max": mx, "avg": sm / num}
 
-    def get_sign_counts(self):
+    def get_sign_counts(self) -> Optional[Dict[str, int]]:
         summa = 0
         pos = 0
         neg = 0
