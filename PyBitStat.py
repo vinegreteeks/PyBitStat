@@ -1,8 +1,8 @@
 import os
-from typing import List, Dict, Optional, Union
+from typing import List, Dict, Optional, Union, Sequence, Tuple, Any
 
 
-def main():
+def main() -> None:
     while True:
         show_menu()
         choice = input("\nВыбери пункт меню (0-5): ").strip()
@@ -21,7 +21,7 @@ def main():
             run_binary_search_mode()
 
 
-def run_list_analysis_mode():
+def run_list_analysis_mode() -> None:
     print("\nРежим: анализ списка чисел.")
     print("Введи целые числа через пробел. Например: 1 2 3 10 -5 0")
     print()
@@ -47,14 +47,17 @@ def run_list_analysis_mode():
         stats = analyzer.get_even_stats()
         print(stats)
         sc = analyzer.get_sign_counts()
-        print(
-            f"Положительных: {sc['pos']}, отрицательных: {sc['neg']}, нулей: {sc['zero']}"
-        )
+        if sc:
+            print(
+                f"Положительных: {sc['pos']}, отрицательных: {sc['neg']}, нулей: {sc['zero']}"
+            )
+        else:
+            print("Знаков нет (список пуст).")
     print("\nВозвращаюсь в главное меню...")
     print()
 
 
-def run_save_report_mode():
+def run_save_report_mode() -> None:
     while True:
         print("Введи целые числа через пробел (или 0 чтобы выйти)")
         raw = input("Твой список: ").strip()
@@ -107,7 +110,7 @@ def run_save_report_mode():
     return
 
 
-def run_to_binary_mode():
+def run_to_binary_mode() -> None:
     while True:
         raw = input("введи неотрицательное целое (0 = выход): ").strip()
         if raw == "0":
@@ -122,7 +125,7 @@ def run_to_binary_mode():
         print(f"Двоичное: {b}")
 
 
-def run_bit_calc_mode():
+def run_bit_calc_mode() -> None:
     num_base = 0
     while True:
         print()
@@ -251,7 +254,7 @@ def run_bit_calc_mode():
             continue
 
 
-def show_menu():
+def show_menu() -> None:
     print("\n1 - Анализ  списка чисел")
     print(
         "    Введёшь список - покажу  чётные числа, и их сумму, минимум, максимум, среднее  и сколько там + / - / нулей"
@@ -273,7 +276,7 @@ def show_menu():
     print("0 - Выход")
 
 
-def run_binary_search_mode():
+def run_binary_search_mode() -> None:
     print("\nРежим: Бинарный поиск")
     raw = input("Введите список чисел через пробел: ").strip()
     try:
@@ -298,7 +301,7 @@ def run_binary_search_mode():
         print("Число не найдено.")
 
 
-def normalize_path(path: str, fmt: str):
+def normalize_path(path: str, fmt: str) -> Tuple[str, str]:
     path = path.strip()
     if not os.path.dirname(path):
         path = os.path.join(os.getcwd(), path)
@@ -317,7 +320,7 @@ def normalize_path(path: str, fmt: str):
 
 
 class NumberAnalyzer:
-    def __init__(self, data: List[Union[int, float, str, bool]]) -> None:
+    def __init__(self, data: Sequence[Union[int, float, str, bool]]) -> None:
         """
         Конструктор. Запускается один раз при создании.
         Здесь мы сохраняем данные и валидируем их.
@@ -342,7 +345,7 @@ class NumberAnalyzer:
                 right = mid - 1
         return -1
 
-    def _is_valid_number(self, x):
+    def _is_valid_number(self, x: Union[int, float, str, bool]) -> bool:
         if isinstance(x, bool):
             return False
         if not isinstance(x, (int, float)):
@@ -387,7 +390,7 @@ class NumberAnalyzer:
         else:
             return {"pos": pos, "neg": neg, "zero": zero}
 
-    def save_to_file(self, path, fmt="txt"):
+    def save_to_file(self, path: str, fmt: str = "txt") -> bool:
         stats = self.get_even_stats()
         if fmt == "txt":
             if stats is None:
@@ -411,11 +414,11 @@ class NumberAnalyzer:
 
         return True
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"NumberAnalyzer: обработано {len(self.data)} чисел. Данные: {self.data}"
 
     @staticmethod
-    def to_binary_divmod(n):
+    def to_binary_divmod(n: int) -> str:
         """
         Возвращает двоичную запись неотрицательного целого n строкой.
         >>> to_binary_divmod(0)
@@ -442,7 +445,7 @@ class NumberAnalyzer:
         return "".join(reversed(bits))
 
     @staticmethod
-    def set_kth_bit(n, k):
+    def set_kth_bit(n: int, k: int) -> int:
         """
         Кратко: "Включает k-й бит числа n".
         Agrs: n (int, >= 0, bool не принимаем), k (int, >=0).
@@ -455,7 +458,7 @@ class NumberAnalyzer:
         return n | (1 << k)
 
     @staticmethod
-    def toggle_kth_bit(n, k):
+    def toggle_kth_bit(n: int, k: int) -> int:
         """
         Инвертирует k-й бит числа n.
         Agrs:
@@ -473,7 +476,7 @@ class NumberAnalyzer:
         return n ^ (1 << k)
 
     @staticmethod
-    def clear_kth_bit(n, k):
+    def clear_kth_bit(n: int, k: int) -> int:
         """
         Принимает int n>=0 и int k>=0; не-int -> TypeError; n < 0 или k < 0 -> ValueError; возвращает int: n с очищенным k-м битом.
         """
@@ -482,7 +485,7 @@ class NumberAnalyzer:
         return n & ~(1 << k)
 
     @staticmethod
-    def _check_non_negative_int(name, value):
+    def _check_non_negative_int(name: str, value: Any) -> None:
         """
         Внутренняя функция-проверка: name(str), value - должен быть int >= 0.
         TypeError - если не int;
