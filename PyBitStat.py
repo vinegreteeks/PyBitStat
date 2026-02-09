@@ -5,7 +5,7 @@ from typing import List, Dict, Optional, Union, Sequence, Tuple, Any
 def main() -> None:
     while True:
         show_menu()
-        choice = input("\nВыбери пункт меню (0-5): ").strip()
+        choice = input("\nВыбери пункт меню (0-6): ").strip()
         if choice == "0":
             print("Выход из программы.")
             break
@@ -19,6 +19,8 @@ def main() -> None:
             run_bit_calc_mode()
         elif choice == "5":
             run_binary_search_mode()
+        elif choice == "6":
+            run_recursion_mode()
 
 
 def run_list_analysis_mode() -> None:
@@ -273,7 +275,33 @@ def show_menu() -> None:
     print()
     print("5 - Бинарный поиск")
     print()
+    print("6 - Рекурсия")
+    print()
     print("0 - Выход")
+
+
+def run_recursion_mode() -> None:
+    print("Режим: Рекурсия")
+    while True:
+        raw = input("Введи число (0 - выход): ").strip()
+        if raw == "0":
+            print("Выход в главное меню...")
+            return
+        elif raw:
+            try:
+                num_fact = int(raw)
+            except (ValueError, TypeError) as e:
+                print(e)
+                continue
+            try:
+                result = NumberAnalyzer.get_factorial(num_fact)
+                print(f"Факториал: {result}")
+            except RecursionError:
+                print("Ошибка: Слишком большое число для рекурсии (Stack Overflow).")
+            except ValueError as e:
+                print(f"Ошибка: {e}")
+        else:
+            continue
 
 
 def run_binary_search_mode() -> None:
@@ -495,6 +523,13 @@ class NumberAnalyzer:
             raise TypeError(f"{name} must be int")
         if value < 0:
             raise ValueError(f"{name} must be a non-negative integer")
+
+    @staticmethod
+    def get_factorial(n: int) -> int:
+        NumberAnalyzer._check_non_negative_int("n", n)
+        if n == 0 or n == 1:
+            return 1
+        return n * NumberAnalyzer.get_factorial(n - 1)
 
 
 if __name__ == "__main__":
