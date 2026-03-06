@@ -1,5 +1,6 @@
 import os
 from typing import List, Dict, Optional, Union, Sequence, Tuple, Any
+from dataclasses import dataclass
 
 
 def main() -> None:
@@ -346,6 +347,13 @@ def normalize_path(path: str, fmt: str) -> Tuple[str, str]:
         raise ValueError("Расширение не совпадает с форматом.")
     return path, fmt
 
+@dataclass
+class EvenStats:
+    sum: int
+    min: int
+    max: int
+    avg: float
+
 
 class NumberAnalyzer:
     def __init__(self, data: Sequence[Union[int, float, str, bool]]) -> None:
@@ -389,15 +397,15 @@ class NumberAnalyzer:
                 evens.append(x)
         return evens
 
-    def get_even_stats(self) -> Optional[Dict[str, float]]:
+    def get_even_stats(self) -> Optional[EvenStats]:
         evens = self.get_even_numbers()
         if not evens:
             return None
         sm = sum(evens)
         mn = min(evens)
         mx = max(evens)
-        num = len(evens)
-        return {"sum": sm, "min": mn, "max": mx, "avg": sm / num}
+        avg_val = sm / len(evens)
+        return EvenStats(sum=sm, min=mn, max=mx, avg=avg_val)
 
     def get_sign_counts(self) -> Optional[Dict[str, int]]:
         summa = 0
