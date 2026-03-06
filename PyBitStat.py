@@ -347,6 +347,7 @@ def normalize_path(path: str, fmt: str) -> Tuple[str, str]:
         raise ValueError("Расширение не совпадает с форматом.")
     return path, fmt
 
+
 @dataclass
 class EvenStats:
     sum: int
