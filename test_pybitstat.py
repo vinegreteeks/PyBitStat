@@ -1,5 +1,5 @@
 import pytest
-from PyBitStat import NumberAnalyzer
+from analyzer import NumberAnalyzer
 
 
 # --- Тесты для инициализации и get_even_numbers ---
@@ -27,10 +27,10 @@ def test_analyzer_empty():
 def test_stats_normal():
     analyzer = NumberAnalyzer([1, 2, 3, 4])
     stats = analyzer.get_even_stats()
-    assert stats["sum"] == 6
-    assert stats["min"] == 2
-    assert stats["max"] == 4
-    assert stats["avg"] == 3.0
+    assert stats.sum == 6
+    assert stats.min == 2
+    assert stats.max == 4
+    assert stats.avg == 3.0
 
 
 def test_stats_none():
