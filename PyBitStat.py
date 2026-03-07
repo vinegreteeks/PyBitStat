@@ -1,6 +1,8 @@
-import os
+import os, time
 from typing import List, Dict, Optional, Union, Sequence, Tuple, Any
 from dataclasses import dataclass
+from functools import wraps
+from typing import Callable
 
 
 def main() -> None:
@@ -356,6 +358,19 @@ class EvenStats:
     avg: float
 
 
+def time_it(func: Callable[..., Any]) -> Callable[..., Any]:
+    @wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
+        start_time = time.perf_counter()
+        result = func(*args, **kwargs)
+        end_time = time.perf_counter()
+        its_time = end_time - start_time
+        print(f"Функция {func.__name__} выполнилась за {its_time:.6f} секунд.")
+        return result
+
+    return wrapper
+
+
 class NumberAnalyzer:
     def __init__(self, data: Sequence[Union[int, float, str, bool]]) -> None:
         """
@@ -368,6 +383,7 @@ class NumberAnalyzer:
                 self.data.append(int(x))
         self.data.sort()
 
+    @time_it
     def find_number(self, target: int) -> int:
         left = 0
         right = len(self.data) - 1
@@ -433,7 +449,7 @@ class NumberAnalyzer:
             if stats is None:
                 content = "Нет чётных целых чисел для анализа."
             else:
-                content = f"Статистика чётных чисел:\nСумма: {stats['sum']}\nМинимум: {stats['min']}\nМаксимум: {stats['max']}\nСреднее: {stats['avg']}"
+                content = f"Статистика чётных чисел:\nСумма: {stats.sum}\nМинимум: {stats.min}\nМаксимум: {stats.max}\nСреднее: {stats.avg}"
 
             with open(path, "w", encoding="utf-8") as f:
                 f.write(content + "\n")
@@ -444,7 +460,7 @@ class NumberAnalyzer:
                 f.write(header)
                 if stats is not None:
                     f.write(
-                        f"{stats['sum']},{stats['min']},{stats['max']},{stats['avg']}\n"
+                        f"{stats.sum},{stats.min},{stats.max},{stats.avg}\n"
                     )
         else:
             raise ValueError("Формат должен быть 'txt' или 'csv'")
