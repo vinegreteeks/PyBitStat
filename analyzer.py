@@ -2,6 +2,7 @@ import logging
 from typing import List, Dict, Optional, Union, Sequence, Any
 from dataclasses import dataclass
 from utils import time_it
+from exceptions import NegativeNumberError, InvalidTypeError
 
 
 @dataclass
@@ -13,6 +14,13 @@ class EvenStats:
 
 
 class NumberAnalyzer:
+
+    def __len__(self) -> int:
+        return len(self.data)
+
+    def __getitem__(self, index: int) -> int:
+        return self.data[index]
+
     def __init__(self, data: Sequence[Union[int, float, str, bool]]) -> None:
         """
         Конструктор. Запускается один раз при создании.
@@ -185,9 +193,9 @@ class NumberAnalyzer:
         ValueError - если < 0.
         """
         if type(value) is not int:
-            raise TypeError(f"{name} must be int")
+            raise InvalidTypeError(f"{name} must be int")
         if value < 0:
-            raise ValueError(f"{name} must be a non-negative integer")
+            raise NegativeNumberError(f"{name} must be a non-negative integer")
 
     @staticmethod
     def get_factorial(n: int) -> int:
@@ -195,3 +203,9 @@ class NumberAnalyzer:
         if n == 0 or n == 1:
             return 1
         return n * NumberAnalyzer.get_factorial(n - 1)
+
+    @staticmethod
+    def get_kth_bit(n: int, k: int) -> int:
+        NumberAnalyzer.clear_kth_bit("n", k)
+        NumberAnalyzer.clear_kth_bit("k", k)
+        return (n >> k) & 1

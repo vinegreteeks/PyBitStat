@@ -1,5 +1,5 @@
 import time
-from PyBitStat import NumberAnalyzer
+from analyzer import NumberAnalyzer
 
 
 def run_benchmark():

@@ -1,5 +1,6 @@
 from analyzer import NumberAnalyzer
 from utils import normalize_path
+from exceptions import NegativeNumberError, InvalidTypeError, AnalyzerError
 import logging
 
 logging.basicConfig(
@@ -17,20 +18,11 @@ def main() -> None:
         show_menu()
         choice = input("\nВыбери пункт меню (0-6): ").strip()
         if choice == "0":
-            print("Выход из программы.")
             break
-        elif choice == "1":
-            run_list_analysis_mode()
-        elif choice == "2":
-            run_save_report_mode()
-        elif choice == "3":
-            run_to_binary_mode()
-        elif choice == "4":
-            run_bit_calc_mode()
-        elif choice == "5":
-            run_binary_search_mode()
-        elif choice == "6":
-            run_recursion_mode()
+        elif choice in MENU_ACTIONS:
+            MENU_ACTIONS[choice]()
+        else:
+            print("Неверный пункт меню.")
 
 
 def run_list_analysis_mode() -> None:
@@ -141,7 +133,7 @@ def run_to_binary_mode() -> None:
 
 
 def run_bit_calc_mode() -> None:
-    num_base = 0
+    num_base = -1
     while True:
         print()
         print(
@@ -149,30 +141,18 @@ def run_bit_calc_mode() -> None:
         )
         print()
         raw = input("Твой вариант: ").strip()
-        if raw == "0":
-            x = 0
-            while x != 1:
-                print()
-                print("1 - Новое число\n0 - Выход")
-                exit_or_num = input("Твой вариант: ").strip()
-                if exit_or_num == "0":
-                    print("Возвращаюсь в меню...")
-                    return
-                elif exit_or_num == "1":
-                    try:
-                        print()
-                        print("Твоё число?")
-                        num_base = int(input("число: ").strip())
-                        if num_base >= 0:
-                            print()
-                            print(f"Число: {num_base} (двочное: {bin(num_base)[2:]})")
-                            x += 1
-                    except (ValueError, TypeError) as e:
-                        print(f"Ошибка: {e}")
-                        continue
-                else:
-                    print("Выбери 0 - 1")
-                    continue
+        if num_base < 0:
+            if not raw:
+                return
+            try:
+                num_base = int(raw)
+                if num_base < 0:
+                    print("Число должно быть >= 0.")
+            except ValueError:
+                print("Это не число")
+            continue
+
+
         elif raw == "1":
             try:
                 print()
@@ -191,7 +171,7 @@ def run_bit_calc_mode() -> None:
                 else:
                     print("Число должно быть больше нуля.")
                     continue
-            except (ValueError, TypeError) as e:
+            except (ValueError, AnalyzerError) as e:
                 print(f"Ошибка: {e}")
                 continue
         elif raw == "2":
@@ -214,7 +194,7 @@ def run_bit_calc_mode() -> None:
                 else:
                     print("Число должно быть больше нуля.")
                     continue
-            except (ValueError, TypeError) as e:
+            except (ValueError, AnalyzerError) as e:
                 print(f"Ошибка: {e}")
                 continue
         elif raw == "3":
@@ -237,7 +217,7 @@ def run_bit_calc_mode() -> None:
                 else:
                     print("Число должно быть больше нуля.")
                     continue
-            except (ValueError, TypeError) as e:
+            except (ValueError, AnalyzerError) as e:
                 print(f"Ошибка: {e}")
                 continue
         elif raw == "4":
@@ -260,7 +240,7 @@ def run_bit_calc_mode() -> None:
                 else:
                     print("Число должно быть больше нуля.")
                     continue
-            except (ValueError, TypeError) as e:
+            except (ValueError, AnalyzerError) as e:
                 print(f"Ошибка: {e}")
                 continue
         else:
@@ -303,7 +283,7 @@ def run_recursion_mode() -> None:
         elif raw:
             try:
                 num_fact = int(raw)
-            except (ValueError, TypeError) as e:
+            except ValueError as e:
                 print(e)
                 continue
             try:
@@ -311,7 +291,7 @@ def run_recursion_mode() -> None:
                 print(f"Факториал: {result}")
             except RecursionError:
                 print("Ошибка: Слишком большое число для рекурсии (Stack Overflow).")
-            except ValueError as e:
+            except AnalyzerError as e:
                 print(f"Ошибка: {e}")
         else:
             continue
@@ -341,11 +321,26 @@ def run_binary_search_mode() -> None:
     else:
         print("Число не найдено.")
 
+MENU_ACTIONS = {
+"1": run_list_analysis_mode,
+"2": run_save_report_mode,
+"3": run_to_binary_mode,
+"4": run_bit_calc_mode,
+"5": run_binary_search_mode,
+"6": run_recursion_mode,
+}
+
+BIT_OPS = {
+"1": NumberAnalyzer.get_kth_bit,
+"2": NumberAnalyzer.set_kth_bit,
+"3": NumberAnalyzer.clear_kth_bit,
+"4": NumberAnalyzer.toggle_kth_bit
+}
 
 if __name__ == "__main__":
-    analyzer = NumberAnalyzer([1, 2, 3, 4, "bad"])
-    print(analyzer)
-    print("Чётные:", analyzer.get_even_numbers())
-    print("Статистика:", analyzer.get_even_stats())
-    print("знаки:", analyzer.get_sign_counts())
+    analyzer = NumberAnalyzer([10, 20, 30])
+    print(f"Длина: {len(analyzer)}")
+    print(f"Первый элемент: {analyzer[0]}")
     main()
+
+
