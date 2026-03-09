@@ -135,13 +135,11 @@ def run_to_binary_mode() -> None:
 def run_bit_calc_mode() -> None:
     num_base = -1
     while True:
-        print()
-        print(
-            "0 - Новое число/Выход\n1 - Показать бит\n2 - Поменять бит на 1\n3 - Обнулить бит\n4 - Поменять бит на противоположный"
-        )
-        print()
-        raw = input("Твой вариант: ").strip()
         if num_base < 0:
+            print()
+            raw = input(
+                "\nВведи неотрицательное базовое число (пустая строка - выход): "
+            ).strip()
             if not raw:
                 return
             try:
@@ -151,102 +149,24 @@ def run_bit_calc_mode() -> None:
             except ValueError:
                 print("Это не число")
             continue
-
-
-        elif raw == "1":
-            try:
-                print()
-                print("Показать бит")
-                if num_base >= 0:
-                    print(f"Число: {num_base} (двочное: {bin(num_base)[2:]})")
-                    pos_bit = int(
-                        input("Позиция(с правого края, счет с нуля): ").strip()
-                    )
-                    if pos_bit >= 0:
-                        print()
-                        print(f"Бит: {(num_base >> pos_bit) & 1}")
-                    else:
-                        print("Число должно быть больше нуля.")
-                        continue
-                else:
-                    print("Число должно быть больше нуля.")
-                    continue
-            except (ValueError, AnalyzerError) as e:
-                print(f"Ошибка: {e}")
-                continue
-        elif raw == "2":
-            try:
-                print()
-                print(("Поменять бит на 1"))
-                if num_base >= 0:
-                    print(f"Число: {num_base}, (двочное: {bin(num_base)[2:]})")
-                    pos_bit = int(
-                        input("Позиция(с правого края счет с нуля): ").strip()
-                    )
-                    if pos_bit >= 0:
-                        print()
-                        print(
-                            f"Получилось число: {NumberAnalyzer.set_kth_bit(num_base, pos_bit)} (двоичное: {bin(NumberAnalyzer.set_kth_bit(num_base, pos_bit))[2:]})"
-                        )
-                    else:
-                        print("Число должно быть больше нуля.")
-                        continue
-                else:
-                    print("Число должно быть больше нуля.")
-                    continue
-            except (ValueError, AnalyzerError) as e:
-                print(f"Ошибка: {e}")
-                continue
-        elif raw == "3":
-            try:
-                print()
-                print("Обнулить бит")
-                if num_base >= 0:
-                    print(f"Число: {num_base} (двочное: {bin(num_base)[2:]})")
-                    pos_clear = int(
-                        input("позиция(с правого края счет с нуля): ").strip()
-                    )
-                    if pos_clear >= 0:
-                        print()
-                        print(
-                            f"Получилось число: {NumberAnalyzer.clear_kth_bit(num_base, pos_clear)} (двоичное: {bin(NumberAnalyzer.clear_kth_bit(num_base, pos_clear))[2:]})"
-                        )
-                    else:
-                        print("Число должно быть больше нуля.")
-                        continue
-                else:
-                    print("Число должно быть больше нуля.")
-                    continue
-            except (ValueError, AnalyzerError) as e:
-                print(f"Ошибка: {e}")
-                continue
-        elif raw == "4":
-            try:
-                print()
-                print("Поменять бит на противоположный")
-                if num_base >= 0:
-                    print(f"Число: {num_base} (двочное: {bin(num_base)[2:]})")
-                    pos_toggle = int(
-                        input("Позиция(с правого края счет с нуля): ").strip()
-                    )
-                    if pos_toggle >= 0:
-                        print()
-                        print(
-                            f"Получилось число: {NumberAnalyzer.toggle_kth_bit(num_base, pos_toggle)} (двоичное: {bin(NumberAnalyzer.toggle_kth_bit(num_base, pos_toggle))[2:]})"
-                        )
-                    else:
-                        print("Число должно быть больше нуля.")
-                        continue
-                else:
-                    print("Число должно быть больше нуля.")
-                    continue
-            except (ValueError, AnalyzerError) as e:
-                print(f"Ошибка: {e}")
-                continue
-        else:
-            print()
-            print("Выбери вариант 0-4")
+        print(f"\nТекущее число: {num_base} (bin: {bin(num_base)[2:]})")
+        print(
+            "1-Показать, 2-Установить(1), 3-Обнулить(0), 4-Инвентировать, 0-Сменить число"
+        )
+        choice = input("Действие: ").strip()
+        if choice == "0":
+            num_base = -1
             continue
+        if choice not in BIT_OPS:
+            print("Неверный пункт.")
+            continue
+        try:
+            pos_bit = int(input("Позиция: "))
+            func = BIT_OPS[choice]
+            result = func(num_base, pos_bit)
+            print(f"Результат: {result} (bin: {bin(result)[2:]})")
+        except (ValueError, AnalyzerError) as e:
+            print(f"Ошибка: {e}")
 
 
 def show_menu() -> None:
@@ -321,20 +241,21 @@ def run_binary_search_mode() -> None:
     else:
         print("Число не найдено.")
 
+
 MENU_ACTIONS = {
-"1": run_list_analysis_mode,
-"2": run_save_report_mode,
-"3": run_to_binary_mode,
-"4": run_bit_calc_mode,
-"5": run_binary_search_mode,
-"6": run_recursion_mode,
+    "1": run_list_analysis_mode,
+    "2": run_save_report_mode,
+    "3": run_to_binary_mode,
+    "4": run_bit_calc_mode,
+    "5": run_binary_search_mode,
+    "6": run_recursion_mode,
 }
 
 BIT_OPS = {
-"1": NumberAnalyzer.get_kth_bit,
-"2": NumberAnalyzer.set_kth_bit,
-"3": NumberAnalyzer.clear_kth_bit,
-"4": NumberAnalyzer.toggle_kth_bit
+    "1": NumberAnalyzer.get_kth_bit,
+    "2": NumberAnalyzer.set_kth_bit,
+    "3": NumberAnalyzer.clear_kth_bit,
+    "4": NumberAnalyzer.toggle_kth_bit,
 }
 
 if __name__ == "__main__":
@@ -342,5 +263,3 @@ if __name__ == "__main__":
     print(f"Длина: {len(analyzer)}")
     print(f"Первый элемент: {analyzer[0]}")
     main()
-
-
